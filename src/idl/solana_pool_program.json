@@ -1,0 +1,167 @@
+{
+    "version": "0.1.0",
+    "name": "solana_pool_program",
+    "instructions": [
+      {
+        "name": "createPool",
+        "docs": [
+          "The creator deposits `deposit_amount` lamports into a new pool,",
+          "sets the number of recipients and distribution type (0 = equal, 1 = random),",
+          "and provides a nonce (to help derive a unique PDA)."
+        ],
+        "accounts": [
+          {
+            "name": "pool",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "creator",
+            "isMut": true,
+            "isSigner": true
+          },
+          {
+            "name": "systemProgram",
+            "isMut": false,
+            "isSigner": false
+          }
+        ],
+        "args": [
+          {
+            "name": "depositAmount",
+            "type": "u64"
+          },
+          {
+            "name": "numRecipients",
+            "type": "u32"
+          },
+          {
+            "name": "distributionType",
+            "type": "u8"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          }
+        ]
+      },
+      {
+        "name": "claim",
+        "docs": [
+          "A claimant calls this instruction to receive their predetermined amount.",
+          "Claims are fulfilled in order – the first claim gets the first amount in the array, etc."
+        ],
+        "accounts": [
+          {
+            "name": "pool",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "claimer",
+            "isMut": true,
+            "isSigner": true
+          },
+          {
+            "name": "systemProgram",
+            "isMut": false,
+            "isSigner": false
+          }
+        ],
+        "args": []
+      }
+    ],
+    "accounts": [
+      {
+        "name": "Pool",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "creator",
+              "type": "publicKey"
+            },
+            {
+              "name": "depositAmount",
+              "type": "u64"
+            },
+            {
+              "name": "numRecipients",
+              "type": "u32"
+            },
+            {
+              "name": "distributionType",
+              "type": "u8"
+            },
+            {
+              "name": "nonce",
+              "type": "u64"
+            },
+            {
+              "name": "bump",
+              "type": "u8"
+            },
+            {
+              "name": "amounts",
+              "type": {
+                "vec": "u64"
+              }
+            },
+            {
+              "name": "claimed",
+              "type": {
+                "vec": "bool"
+              }
+            },
+            {
+              "name": "claimedCount",
+              "type": "u32"
+            }
+          ]
+        }
+      }
+    ],
+    "types": [
+      {
+        "name": "ErrorCode",
+        "type": {
+          "kind": "enum",
+          "variants": [
+            {
+              "name": "InvalidDistributionType"
+            }
+          ]
+        }
+      }
+    ],
+    "errors": [
+      {
+        "code": 6000,
+        "name": "InvalidNumberOfRecipients",
+        "msg": "Invalid number of recipients."
+      },
+      {
+        "code": 6001,
+        "name": "InsufficientDeposit",
+        "msg": "Insufficient deposit amount for the number of recipients."
+      },
+      {
+        "code": 6002,
+        "name": "MathOverflow",
+        "msg": "Math overflow occurred."
+      },
+      {
+        "code": 6003,
+        "name": "AllCoinsClaimed",
+        "msg": "All coins have been claimed."
+      },
+      {
+        "code": 6004,
+        "name": "InsufficientPoolBalance",
+        "msg": "Pool does not have enough balance."
+      }
+    ],
+    "metadata": {
+      "address": "DKFz7toCAZhB4v5isDBDDQJBYSg9v1F4X1uWiWPf6W2K"
+    }
+  }
